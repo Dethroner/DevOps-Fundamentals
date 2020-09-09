@@ -12,15 +12,15 @@ end
 servers=[
   {
     :hostname => "LAB1ACC1",
-    :net => $net1,
-    :ram => 1024,
-    :cpu => 1
+    :net      => $net1,
+    :ram      => 1024,
+    :cpu      => 1
   },
   {
     :hostname => "LAB1BUS1",
-    :net => $net2,
-    :ram => 1024,
-    :cpu => 1
+    :net      => $net2,
+    :ram      => 1024,
+    :cpu      => 1
   }
 ]
 
