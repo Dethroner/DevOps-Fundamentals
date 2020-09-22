@@ -57,6 +57,7 @@ Vagrant.configure(2) do |config|
         master.vm.network :private_network, ip: "192.168.2.2", netmask: "255.255.255.0", mac: "080027AAAAA2"
         master.vm.provision "shell", path: "files/pre-install.ps1", privileged: true, args: $adminpass
         master.vm.provision "shell", path: "files/bootstrap.ps1", privileged: true
+        master.vm.provision "shell", path: "files/nat.ps1", privileged: true
         # master.vm.provision :reload
     end
 
@@ -89,8 +90,8 @@ Vagrant.configure(2) do |config|
             node.winrm.retry_limit = 20
 
             node.vm.provision "shell", path: "files/pre-install.ps1", privileged: true, args: $adminpass
-            # node.vm.provision "shell", inline: <<-SHELL
-                # powershell -windowstyle hidden -command netsh interface set interface "Ethernet" disable
+            # node.vm.provision "shell", privileged: true, inline: <<-SHELL
+                # netsh interface set interface "Ethernet" disable
             # SHELL
         end
     end
