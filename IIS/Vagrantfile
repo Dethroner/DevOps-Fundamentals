@@ -1,0 +1,45 @@
+$BOX       = "rgl/windows-server-2019-standard-amd64"
+$HOSTNAME  = "LAB1SRV1"
+$adminpass = "P@ssw0rd"
+
+required_plugins = %w( vagrant-reload vagrant-vbguest )
+required_plugins.each do |plugin|
+    exec "vagrant plugin install #{plugin};vagrant #{ARGV.join(" ")}" unless Vagrant.has_plugin? plugin || ARGV[0] == 'plugin'
+end
+
+Vagrant.configure(2) do |config|
+
+    config.vm.box = "rgl/windows-server-2019-standard-amd64"
+    config.vm.box_check_update = false
+
+    config.vm.define $HOSTNAME do |master|
+
+        master.vm.provider "virtualbox" do |vb, override|
+          vb.name = $HOSTNAME
+          vb.customize ["modifyvm", :id, "--memory", 2048]
+          vb.customize ["modifyvm", :id, "--cpus", 2]
+          vb.customize ["modifyvm", :id, "--vram", "32"]
+          vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+          vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+          vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+        end
+
+
+        master.vm.hostname = $HOSTNAME
+        master.vm.guest = :windows
+        master.vm.boot_timeout = 600
+        master.vm.communicator = "winrm"
+        master.winrm.transport = :plaintext
+        master.winrm.basic_auth_only = true
+        master.winrm.username = "vagrant"
+        master.winrm.password = "vagrant"
+        master.winrm.timeout = 300
+        master.winrm.retry_limit = 20
+
+        master.vm.network :private_network, ip: "192.168.1.2", netmask: "255.255.255.0"
+        master.vm.provision "shell", path: "files/pre-install.ps1", privileged: true, args: $adminpass
+        master.vm.provision "shell", path: "files/bootstrap.ps1", privileged: true, args: $HOSTNAME
+        # master.vm.provision :reload
+    end
+
+end
