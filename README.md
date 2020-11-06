@@ -12,3 +12,8 @@ height=48 width=48 alt="Vagrant Logo" />
 1. Установка Vagrant<br>
 2. Установка VirtualBox + VirtualBox Extension Pack<br>
 При утановке VirtualBox Host-Only Ethernet Adapter по-умолчанию добавляется VirtualBox Host-Only Ethernet Adapter. При написании Vagrantfile отталкиваюсь от того что он есть, потому его не учитываю в работе (у меня он переконфигурирован под тетовую сеть 10.50.10.0/24).
+
+К Linux ВМ можно подключится, например так:
+```
+ssh appuser@192.168.1.2 -i ~/.ssh/appuser
+```
